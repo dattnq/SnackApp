@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SnackApp Admin</string>
+
+    <!-- Auth -->
+    <string name="label_email">Email</string>
+    <string name="label_password">Mật khẩu</string>
+    <string name="label_confirm_password">Xác nhận mật khẩu</string>
+    <string name="label_full_name">Họ và tên</string>
+    <string name="btn_login">Đăng nhập</string>
+    <string name="btn_register">Đăng ký</string>
+    <string name="btn_logout">Đăng xuất</string>
+    <string name="msg_no_account">Chưa có tài khoản? </string>
+    <string name="msg_have_account">Đã có tài khoản? </string>
+    <string name="link_register">Đăng ký ngay</string>
+    <string name="link_login">Đăng nhập</string>
+    <string name="hint_login_subtitle">Đăng nhập để quản lý cửa hàng</string>
+    <string name="hint_welcome_back">Chào mừng trở lại</string>
+    <string name="hint_create_account">Tạo tài khoản</string>
+
+    <!-- Admin nav -->
+    <string name="nav_dashboard">Thống kê</string>
+    <string name="nav_products">Sản phẩm</string>
+    <string name="nav_orders">Đơn hàng</string>
+
+    <!-- Product -->
+    <string name="label_product_name">Tên sản phẩm *</string>
+    <string name="label_price">Giá (₫) *</string>
+    <string name="label_category">Danh mục</string>
+    <string name="label_stock">Tồn kho</string>
+    <string name="label_expire_date">Hạn SD (dd/MM/yyyy)</string>
+    <string name="label_description">Mô tả sản phẩm</string>
+    <string name="btn_save_product">Lưu sản phẩm</string>
+    <string name="btn_add_product">Thêm món</string>
+    <string name="title_add_product">Thêm sản phẩm</string>
+    <string name="title_edit_product">Sửa sản phẩm</string>
+    <string name="hint_pick_image">Chọn ảnh</string>
+    <string name="hint_change_image">Đổi ảnh sản phẩm</string>
+    <string name="msg_empty_products">Chưa có sản phẩm nào</string>
+    <string name="msg_upload_progress">Đang tải ảnh lên... %1$d%%</string>
+    <string name="hint_search_products">Tìm kiếm sản phẩm...</string>
+    <string name="label_stock_sold_format">Tồn: %1$d | Đã bán: %2$d</string>
+
+    <!-- Order -->
+    <string name="chip_all">Tất cả</string>
+    <string name="chip_pending">Đang xử lý</string>
+    <string name="chip_delivered">Đã giao</string>
+    <string name="btn_confirm_delivery">✓ Xác nhận giao</string>
+    <string name="msg_empty_orders">Không có đơn hàng</string>
+    <string name="status_pending">Đang xử lý</string>
+    <string name="status_delivered">Đã giao</string>
+    <string name="order_id_format">#%1$s</string>
+    <string name="item_count_format">%1$d món</string>
+
+    <!-- Dashboard -->
+    <string name="title_dashboard_today">Tổng quan hôm nay</string>
+    <string name="subtitle_realtime">Cập nhật theo thời gian thực</string>
+    <string name="label_total_revenue">Doanh thu</string>
+    <string name="label_total_orders">Tổng đơn</string>
+    <string name="label_delivered">Đã giao</string>
+    <string name="label_pending">Đang xử lý</string>
+    <string name="label_total_products">Sản phẩm</string>
+
+    <string name="label_total_orders_count">%1$d đơn</string>
+    <string name="label_delivered_count">%1$d đã giao</string>
+    <string name="label_pending_count">%1$d chờ</string>
+    <string name="label_total_products_count">%1$d món</string>
+
+    <string name="chart_order_status">Trạng thái đơn hàng</string>
+    <string name="chart_revenue_7days">Doanh thu 7 ngày gần đây</string>
+    <string name="chart_top_selling">Top 5 sản phẩm bán chạy</string>
+    <string name="title_warning">⚠️ Cảnh báo</string>
+    <string name="label_low_stock">Sắp hết hàng (≤5)</string>
+    <string name="label_near_expiry">Sắp hết hạn (trong 7 ngày)</string>
+    <string name="msg_stock_ok">Ổn định</string>
+    <string name="msg_no_near_expiry">Không có</string>
+    <string name="revenue_format">%,.0f₫</string>
+
+    <!-- Dialogs -->
+    <string name="dialog_confirm_delete_title">Xác nhận xóa</string>
+    <string name="dialog_confirm_delete_msg">Bạn có chắc muốn xóa \"%1$s\"?</string>
+    <string name="dialog_confirm_logout_title">Đăng xuất</string>
+    <string name="dialog_confirm_logout_msg">Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng?</string>
+    <string name="btn_delete">Xóa</string>
+    <string name="btn_logout_confirm">Đăng xuất</string>
+    <string name="btn_cancel">Hủy</string>
+
+    <!-- Errors -->
+    <string name="err_fill_all_fields">Vui lòng điền đầy đủ thông tin</string>
+    <string name="err_password_mismatch">Mật khẩu không khớp</string>
+    <string name="err_password_too_short">Mật khẩu tối thiểu 6 ký tự</string>
+    <string name="err_invalid_price">Giá không hợp lệ</string>
+    <string name="err_pick_image">Vui lòng chọn ảnh sản phẩm</string>
+    <string name="err_upload_failed">Upload ảnh thất bại: %1$s</string>
+    <string name="err_load_user">Không thể đọc dữ liệu người dùng</string>
+    <string name="err_login_failed">Đăng nhập thất bại: %1$s</string>
+    <string name="err_register_failed">Đăng ký thất bại: %1$s</string>
+    <string name="err_load_data">Lỗi tải dữ liệu</string>
+    <string name="err_save_failed">Lỗi lưu dữ liệu: %1$s</string>
+
+    <!-- Success -->
+    <string name="msg_product_added">Đã thêm sản phẩm!</string>
+    <string name="msg_product_updated">Đã cập nhật sản phẩm!</string>
+    <string name="msg_product_deleted">Đã xóa sản phẩm</string>
+    <string name="msg_status_updated">Đã cập nhật trạng thái</string>
+    <string name="msg_register_success">Đăng ký thành công!</string>
+    <string name="msg_welcome_user">Xin chào %1$s</string>
+</resources>

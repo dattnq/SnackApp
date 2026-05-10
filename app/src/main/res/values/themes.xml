@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/values/themes.xml -->
+<resources>
+
+    <style name="Theme.SnackAdmin" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary_orange</item>
+        <item name="colorPrimaryVariant">@color/primary_orange_dark</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">@color/primary_orange</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="android:windowBackground">@color/bg_page</item>
+        <!-- TextInputLayout stroke color khi focus -->
+        <item name="colorControlActivated">@color/primary_orange</item>
+    </style>
+
+    <!-- Chip filter style màu cam -->
+    <style name="Widget.SnackAdmin.Chip.Filter" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@color/primary_orange_light</item>
+        <item name="checkedIconTint">@color/primary_orange</item>
+        <item name="chipStrokeColor">@color/primary_orange</item>
+        <item name="chipStrokeWidth">0.5dp</item>
+    </style>
+
+</resources>

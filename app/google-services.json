@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "930790941454",
+    "project_id": "snackapp-66436",
+    "storage_bucket": "snackapp-66436.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930790941454:android:258ca1598cf25de88cad5f",
+        "android_client_info": {
+          "package_name": "com.snackapp.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpyQalSZdc-jC_yIhgAWviN6ALCC5nqN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

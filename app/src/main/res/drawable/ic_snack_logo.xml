@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+
+    <!-- Bag body -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="M18,28L54,28L50,58C50,59.105 49.105,60 48,60L24,60C22.895,60 22,59.105 22,58L18,28Z"/>
+
+    <!-- Bag handle -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M26,28L26,22C26,17.582 29.582,14 34,14L38,14C42.418,14 46,17.582 46,22L46,28"
+        android:strokeColor="#FF6B35"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- Star decoration -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M36,35L37.8,40.5L43.5,40.5L39,44L40.8,49.5L36,46L31.2,49.5L33,44L28.5,40.5L34.2,40.5Z"/>
+</vector>
