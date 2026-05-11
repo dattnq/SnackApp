@@ -14,9 +14,26 @@
     <string name="msg_have_account">Đã có tài khoản? </string>
     <string name="link_register">Đăng ký ngay</string>
     <string name="link_login">Đăng nhập</string>
-    <string name="hint_login_subtitle">Đăng nhập để quản lý cửa hàng</string>
+    <string name="btn_google_login">Tiếp tục với Google</string>
+    <string name="link_forgot_password">Quên mật khẩu?</string>
     <string name="hint_welcome_back">Chào mừng trở lại</string>
     <string name="hint_create_account">Tạo tài khoản</string>
+
+    <!-- Google Auth Placeholder -->
+    <string name="default_web_client_id">930790941454-placeholder.apps.googleusercontent.com</string>
+
+    <!-- Forgot Password -->
+    <string name="title_forgot_password">Quên mật khẩu</string>
+    <string name="desc_forgot_password">Nhập email của bạn để nhận mã OTP khôi phục mật khẩu</string>
+    <string name="btn_send_otp">Gửi mã OTP</string>
+    <string name="title_verify_otp">Xác thực OTP</string>
+    <string name="desc_verify_otp">Chúng tôi đã gửi mã OTP 6 số đến email của bạn. Vui lòng kiểm tra hộp thư.</string>
+    <string name="btn_verify">Xác nhận</string>
+    <string name="title_reset_password">Đặt lại mật khẩu</string>
+    <string name="label_new_password">Mật khẩu mới</string>
+    <string name="btn_change_password">Thay đổi mật khẩu</string>
+    <string name="msg_otp_sent">Mã OTP đã được gửi!</string>
+    <string name="err_invalid_otp">Mã OTP không chính xác</string>
 
     <!-- Admin nav -->
     <string name="nav_dashboard">Thống kê</string>
@@ -37,7 +54,7 @@
     <string name="hint_pick_image">Chọn ảnh</string>
     <string name="hint_change_image">Đổi ảnh sản phẩm</string>
     <string name="msg_empty_products">Chưa có sản phẩm nào</string>
-    <string name="msg_upload_progress">Đang tải ảnh lên... %1$d%%</string>
+    <string name="msg_upload_progress">Đang tải ảnh lên ImgBB... %1$d%%</string>
     <string name="hint_search_products">Tìm kiếm sản phẩm...</string>
     <string name="label_stock_sold_format">Tồn: %1$d | Đã bán: %2$d</string>
 
@@ -60,12 +77,11 @@
     <string name="label_delivered">Đã giao</string>
     <string name="label_pending">Đang xử lý</string>
     <string name="label_total_products">Sản phẩm</string>
-
     <string name="label_total_orders_count">%1$d đơn</string>
     <string name="label_delivered_count">%1$d đã giao</string>
     <string name="label_pending_count">%1$d chờ</string>
     <string name="label_total_products_count">%1$d món</string>
-
+    <string name="revenue_format">%,.0f₫</string>
     <string name="chart_order_status">Trạng thái đơn hàng</string>
     <string name="chart_revenue_7days">Doanh thu 7 ngày gần đây</string>
     <string name="chart_top_selling">Top 5 sản phẩm bán chạy</string>
@@ -74,7 +90,6 @@
     <string name="label_near_expiry">Sắp hết hạn (trong 7 ngày)</string>
     <string name="msg_stock_ok">Ổn định</string>
     <string name="msg_no_near_expiry">Không có</string>
-    <string name="revenue_format">%,.0f₫</string>
 
     <!-- Dialogs -->
     <string name="dialog_confirm_delete_title">Xác nhận xóa</string>

@@ -32,6 +32,11 @@
             android:name=".auth.RegisterActivity"
             android:exported="false"/>
 
+        <activity
+            android:name=".auth.ForgotPasswordActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
+
         <!-- Admin -->
         <activity
             android:name=".admin.AdminMainActivity"
