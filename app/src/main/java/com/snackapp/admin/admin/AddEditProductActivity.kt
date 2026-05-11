@@ -1,20 +1,28 @@
 package com.snackapp.admin.admin
 
 import android.app.DatePickerDialog
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
 import com.snackapp.admin.R
 import com.snackapp.admin.databinding.ActivityAddEditProductBinding
 import com.snackapp.admin.model.Product
+import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,18 +31,17 @@ class AddEditProductActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_PRODUCT_ID = "extra_product_id"
         private const val TAG = "AddEditProduct"
+        private const val IMGBB_API_KEY = "d16845701e4b8a58d8ccc5a4029e82df"
     }
 
     private lateinit var binding: ActivityAddEditProductBinding
     private val dbRef = FirebaseDatabase.getInstance().getReference("Products")
-    private val storageRef = FirebaseStorage.getInstance().getReference("product_images")
 
     private var selectedImageUri: Uri? = null
     private var existingProduct: Product? = null
     private var existingImageUrl: String = ""
     private val calendar = Calendar.getInstance()
 
-    // Sử dụng Photo Picker hiện đại hơn
     private val imagePickerLauncher = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
@@ -117,7 +124,6 @@ class AddEditProductActivity : AppCompatActivity() {
         val price = priceStr.replace(",", ".").toDoubleOrNull() ?: 0.0
         val stock = stockStr.toIntOrNull() ?: 0
 
-        // Kiểm tra ảnh nếu là thêm mới
         if (selectedImageUri == null && existingImageUrl.isEmpty()) {
             Toast.makeText(this, getString(R.string.err_pick_image), Toast.LENGTH_SHORT).show()
             return
@@ -125,37 +131,99 @@ class AddEditProductActivity : AppCompatActivity() {
 
         showLoading(true)
         if (selectedImageUri != null) {
-            uploadImageAndSave(name, price, stock, expireDate)
+            val base64Image = uriToBase64(selectedImageUri!!)
+            if (base64Image != null) {
+                uploadImageToImgBB(base64Image, name, price, stock, expireDate)
+            } else {
+                showLoading(false)
+                Toast.makeText(this, "Không thể xử lý ảnh", Toast.LENGTH_SHORT).show()
+            }
         } else {
             persistProduct(name, price, existingImageUrl, stock, expireDate)
         }
     }
 
-    private fun uploadImageAndSave(name: String, price: Double, stock: Int, expireDate: String) {
-        val fileName = "prod_${System.currentTimeMillis()}.jpg"
-        val ref = storageRef.child(fileName)
-
-        val uploadTask = ref.putFile(selectedImageUri!!)
-        
-        uploadTask.addOnProgressListener { taskSnapshot ->
-            val total = taskSnapshot.totalByteCount
-            if (total > 0) {
-                val progress = (100.0 * taskSnapshot.bytesTransferred / total).toInt()
-                binding.progressBar.progress = progress
-                binding.tvUploadProgress.text = getString(R.string.msg_upload_progress, progress)
-            }
-        }.addOnSuccessListener {
-            ref.downloadUrl.addOnSuccessListener { uri ->
-                persistProduct(name, price, uri.toString(), stock, expireDate)
-            }.addOnFailureListener { e ->
-                showLoading(false)
-                Toast.makeText(this, "Lỗi lấy URL: ${e.message}", Toast.LENGTH_LONG).show()
-            }
-        }.addOnFailureListener { e ->
-            showLoading(false)
-            Log.e(TAG, "Storage Error: ${e.message}")
-            Toast.makeText(this, getString(R.string.err_upload_failed, e.message), Toast.LENGTH_LONG).show()
+    private fun uriToBase64(uri: Uri): String? {
+        return try {
+            val inputStream = contentResolver.openInputStream(uri)
+            val bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream?.close()
+            
+            // Resize bitmap to avoid Volley/ImgBB limits or OOM
+            val scaledBitmap = scaleBitmap(bitmap)
+            
+            val outputStream = ByteArrayOutputStream()
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
+            val byteArray = outputStream.toByteArray()
+            Base64.encodeToString(byteArray, Base64.NO_WRAP)
+        } catch (e: Exception) {
+            Log.e(TAG, "Lỗi chuyển base64: ${e.message}")
+            null
         }
+    }
+
+    private fun scaleBitmap(bitmap: Bitmap): Bitmap {
+        val maxSize = 1024
+        var width = bitmap.width
+        var height = bitmap.height
+        
+        val bitmapRatio = width.toFloat() / height.toFloat()
+        if (bitmapRatio > 1) {
+            width = maxSize
+            height = (width / bitmapRatio).toInt()
+        } else {
+            height = maxSize
+            width = (height * bitmapRatio).toInt()
+        }
+        return Bitmap.createScaledBitmap(bitmap, width, height, true)
+    }
+
+    private fun uploadImageToImgBB(base64Image: String, name: String, price: Double, stock: Int, expireDate: String) {
+        val url = "https://api.imgbb.com/1/upload?key=$IMGBB_API_KEY"
+        
+        binding.layoutProgress.visibility = View.VISIBLE
+        binding.tvUploadProgress.text = "Đang tải ảnh lên ImgBB..."
+        binding.progressBar.isIndeterminate = true
+        
+        val queue = Volley.newRequestQueue(this)
+        val stringRequest = object : StringRequest(Request.Method.POST, url,
+            { response ->
+                try {
+                    val jsonResponse = JSONObject(response)
+                    if (jsonResponse.getBoolean("success")) {
+                        val imageUrl = jsonResponse.getJSONObject("data").getString("url")
+                        persistProduct(name, price, imageUrl, stock, expireDate)
+                    } else {
+                        showLoading(false)
+                        Toast.makeText(this, "ImgBB error: success=false", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    showLoading(false)
+                    Log.e(TAG, "Lỗi phân tích JSON: ${e.message}")
+                    Toast.makeText(this, "Lỗi phản hồi từ server", Toast.LENGTH_SHORT).show()
+                }
+            },
+            { error ->
+                showLoading(false)
+                val errorMessage = error.networkResponse?.let { "Code: ${it.statusCode}" } ?: error.message
+                Log.e(TAG, "Lỗi Volley: $errorMessage")
+                Toast.makeText(this, "Lỗi kết nối: $errorMessage", Toast.LENGTH_SHORT).show()
+            }) {
+            override fun getParams(): MutableMap<String, String> {
+                val params = HashMap<String, String>()
+                params["image"] = base64Image
+                return params
+            }
+        }
+        
+        // Add timeout/retry policy for large images
+        stringRequest.retryPolicy = DefaultRetryPolicy(
+            30000, 
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES, 
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+        
+        queue.add(stringRequest)
     }
 
     private fun persistProduct(name: String, price: Double, url: String, stock: Int, expireDate: String) {
@@ -185,6 +253,9 @@ class AddEditProductActivity : AppCompatActivity() {
     private fun showLoading(show: Boolean) {
         binding.layoutProgress.visibility = if (show) View.VISIBLE else View.GONE
         binding.btnSave.isEnabled = !show
+        if (!show) {
+            binding.progressBar.isIndeterminate = false
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
