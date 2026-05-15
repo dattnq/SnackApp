@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Base64
 import android.util.Log
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,6 +42,8 @@ class AddEditProductActivity : AppCompatActivity() {
     private var existingProduct: Product? = null
     private var existingImageUrl: String = ""
     private val calendar = Calendar.getInstance()
+    
+    private val categories = arrayOf("Đồ ăn", "Đồ uống", "Snack")
 
     private val imagePickerLauncher = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
@@ -60,6 +63,8 @@ class AddEditProductActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        setupCategoryDropdown()
+
         val productId = intent.getStringExtra(EXTRA_PRODUCT_ID)
         if (productId != null) {
             loadProductForEdit(productId)
@@ -75,6 +80,11 @@ class AddEditProductActivity : AppCompatActivity() {
         binding.etExpireDate.isFocusable = false
 
         binding.btnSave.setOnClickListener { saveProduct() }
+    }
+
+    private fun setupCategoryDropdown() {
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, categories)
+        binding.actvCategory.setAdapter(adapter)
     }
 
     private fun showDatePicker() {
@@ -96,7 +106,7 @@ class AddEditProductActivity : AppCompatActivity() {
             binding.etName.setText(product.name)
             binding.etPrice.setText(String.format(Locale.US, "%.0f", product.price))
             binding.etDescription.setText(product.description)
-            binding.etCategory.setText(product.category)
+            binding.actvCategory.setText(product.category, false) // false to prevent filtering
             binding.etStock.setText(product.stock.toString())
             binding.etExpireDate.setText(product.expireDate)
 
@@ -115,8 +125,9 @@ class AddEditProductActivity : AppCompatActivity() {
         val priceStr = binding.etPrice.text.toString().trim()
         val stockStr = binding.etStock.text.toString().trim()
         val expireDate = binding.etExpireDate.text.toString().trim()
+        val category = binding.actvCategory.text.toString().trim()
 
-        if (name.isEmpty() || priceStr.isEmpty()) {
+        if (name.isEmpty() || priceStr.isEmpty() || category.isEmpty()) {
             Toast.makeText(this, getString(R.string.err_fill_all_fields), Toast.LENGTH_SHORT).show()
             return
         }
@@ -133,13 +144,13 @@ class AddEditProductActivity : AppCompatActivity() {
         if (selectedImageUri != null) {
             val base64Image = uriToBase64(selectedImageUri!!)
             if (base64Image != null) {
-                uploadImageToImgBB(base64Image, name, price, stock, expireDate)
+                uploadImageToImgBB(base64Image, name, price, stock, expireDate, category)
             } else {
                 showLoading(false)
                 Toast.makeText(this, "Không thể xử lý ảnh", Toast.LENGTH_SHORT).show()
             }
         } else {
-            persistProduct(name, price, existingImageUrl, stock, expireDate)
+            persistProduct(name, price, existingImageUrl, stock, expireDate, category)
         }
     }
 
@@ -149,7 +160,6 @@ class AddEditProductActivity : AppCompatActivity() {
             val bitmap = BitmapFactory.decodeStream(inputStream)
             inputStream?.close()
             
-            // Resize bitmap to avoid Volley/ImgBB limits or OOM
             val scaledBitmap = scaleBitmap(bitmap)
             
             val outputStream = ByteArrayOutputStream()
@@ -178,7 +188,7 @@ class AddEditProductActivity : AppCompatActivity() {
         return Bitmap.createScaledBitmap(bitmap, width, height, true)
     }
 
-    private fun uploadImageToImgBB(base64Image: String, name: String, price: Double, stock: Int, expireDate: String) {
+    private fun uploadImageToImgBB(base64Image: String, name: String, price: Double, stock: Int, expireDate: String, category: String) {
         val url = "https://api.imgbb.com/1/upload?key=$IMGBB_API_KEY"
         
         binding.layoutProgress.visibility = View.VISIBLE
@@ -192,7 +202,7 @@ class AddEditProductActivity : AppCompatActivity() {
                     val jsonResponse = JSONObject(response)
                     if (jsonResponse.getBoolean("success")) {
                         val imageUrl = jsonResponse.getJSONObject("data").getString("url")
-                        persistProduct(name, price, imageUrl, stock, expireDate)
+                        persistProduct(name, price, imageUrl, stock, expireDate, category)
                     } else {
                         showLoading(false)
                         Toast.makeText(this, "ImgBB error: success=false", Toast.LENGTH_SHORT).show()
@@ -216,7 +226,6 @@ class AddEditProductActivity : AppCompatActivity() {
             }
         }
         
-        // Add timeout/retry policy for large images
         stringRequest.retryPolicy = DefaultRetryPolicy(
             30000, 
             DefaultRetryPolicy.DEFAULT_MAX_RETRIES, 
@@ -226,7 +235,7 @@ class AddEditProductActivity : AppCompatActivity() {
         queue.add(stringRequest)
     }
 
-    private fun persistProduct(name: String, price: Double, url: String, stock: Int, expireDate: String) {
+    private fun persistProduct(name: String, price: Double, url: String, stock: Int, expireDate: String, category: String) {
         val id = existingProduct?.productId ?: dbRef.push().key ?: UUID.randomUUID().toString()
         val product = Product(
             productId = id,
@@ -234,7 +243,7 @@ class AddEditProductActivity : AppCompatActivity() {
             price = price,
             imageUrl = url,
             description = binding.etDescription.text.toString().trim(),
-            category = binding.etCategory.text.toString().trim(),
+            category = category,
             stock = stock,
             expireDate = expireDate,
             sold = existingProduct?.sold ?: 0

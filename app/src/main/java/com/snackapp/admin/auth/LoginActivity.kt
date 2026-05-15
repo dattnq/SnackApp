@@ -33,8 +33,11 @@ class LoginActivity : AppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)!!
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
+                showLoading(false)
                 Toast.makeText(this, "Google Sign-In failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+        } else {
+            showLoading(false)
         }
     }
 
@@ -44,8 +47,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Setup Google Sign-In
-        // Lưu ý: R.string.default_web_client_id sẽ tự động có sau khi bạn thêm OAuth Client ID vào Firebase Console 
-        // và tải lại file google-services.json. Nếu chưa có, bạn có thể thay bằng chuỗi trực tiếp.
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -60,6 +61,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
         binding.btnGoogleLogin.setOnClickListener {
+            showLoading(true)
             googleSignInLauncher.launch(googleSignInClient.signInIntent)
         }
         binding.tvForgotPassword.setOnClickListener {
@@ -68,16 +70,16 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        showLoading(true)
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
-            .addOnSuccessListener { result ->
-                val firebaseUser = result.user!!
-                saveUserToDatabaseIfNew(firebaseUser)
-            }
-            .addOnFailureListener { e ->
-                showLoading(false)
-                Toast.makeText(this, "Auth failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val firebaseUser = auth.currentUser
+                    firebaseUser?.let { saveUserToDatabaseIfNew(it) }
+                } else {
+                    showLoading(false)
+                    Toast.makeText(this, "Xác thực Firebase thất bại: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
@@ -87,9 +89,9 @@ class LoginActivity : AppCompatActivity() {
             if (!snap.exists()) {
                 val user = User(
                     uid = firebaseUser.uid,
-                    fullName = firebaseUser.displayName ?: "",
+                    fullName = firebaseUser.displayName ?: "Người dùng Google",
                     email = firebaseUser.email ?: "",
-                    role = "customer",
+                    role = "customer", // Mặc định là customer, admin phải set tay trong DB
                     avatarUrl = firebaseUser.photoUrl.toString()
                 )
                 db.child(firebaseUser.uid).setValue(user).addOnSuccessListener {
@@ -136,7 +138,8 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 } else {
                     Toast.makeText(this, getString(R.string.msg_welcome_user, user?.fullName ?: "Khách"), Toast.LENGTH_SHORT).show()
-                    // Điều hướng sang màn hình người dùng nếu cần
+                    // Nếu là app admin mà user không phải admin, có thể logout hoặc báo lỗi
+                    // Ở đây tôi giả định bạn cho phép customer vào nhưng có thể hạn chế sau
                 }
             }
             .addOnFailureListener {

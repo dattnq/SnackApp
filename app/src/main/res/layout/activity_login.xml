@@ -22,6 +22,7 @@
         android:layout_height="80dp"
         android:src="@drawable/ic_snack_logo"
         android:layout_marginTop="30dp"
+        android:contentDescription="@string/app_name"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -48,7 +49,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Đăng nhập"
+                android:text="@string/btn_login"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -58,7 +59,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email"
+                android:hint="@string/label_email"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:startIconDrawable="@drawable/ic_email"
                 app:boxCornerRadiusTopStart="12dp"
@@ -76,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:hint="Mật khẩu"
+                android:hint="@string/label_password"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:startIconDrawable="@drawable/ic_lock"
                 app:endIconMode="password_toggle"
@@ -95,7 +96,7 @@
                 android:id="@+id/tvForgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quên mật khẩu?"
+                android:text="@string/link_forgot_password"
                 android:layout_gravity="end"
                 android:layout_marginTop="8dp"
                 android:textColor="@color/primary_orange"
@@ -107,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="20dp"
-                android:text="Đăng nhập"
+                android:text="@string/btn_login"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:cornerRadius="12dp"
@@ -124,12 +125,12 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:text="Tiếp tục với Google"
+                android:text="@string/btn_google_login"
                 android:textColor="@color/text_primary"
                 app:cornerRadius="12dp"
                 app:strokeColor="#BDBDBD"
-                app:icon="@android:drawable/ic_menu_help"
-                app:iconTint="@android:color/transparent"
+                app:icon="@drawable/ic_google"
+                app:iconTint="@null"
                 app:iconPadding="8dp"
                 android:textAllCaps="false"/>
 
@@ -142,14 +143,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Chưa có tài khoản? "
+                    android:text="@string/msg_no_account"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"/>
                 <TextView
                     android:id="@+id/btnRegister"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đăng ký ngay"
+                    android:text="@string/link_register"
                     android:textColor="@color/primary_orange"
                     android:textStyle="bold"
                     android:textSize="13sp"/>

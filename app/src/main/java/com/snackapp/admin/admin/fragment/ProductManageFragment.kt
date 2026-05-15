@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.*
+import com.snackapp.admin.R
 import com.snackapp.admin.admin.AddEditProductActivity
 import com.snackapp.admin.admin.adapter.ProductAdminAdapter
 import com.snackapp.admin.databinding.FragmentProductManageBinding
@@ -24,6 +25,7 @@ class ProductManageFragment : Fragment() {
     private lateinit var adapter: ProductAdminAdapter
     
     private var productListener: ValueEventListener? = null
+    private var currentCategory: String = "Tất cả"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProductManageBinding.inflate(inflater, container, false)
@@ -48,12 +50,26 @@ class ProductManageFragment : Fragment() {
         }
 
         binding.etSearch.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) = filterProducts(s.toString())
+            override fun afterTextChanged(s: Editable?) = filterProducts()
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
+        setupCategoryFilter()
         listenProducts()
+    }
+
+    private fun setupCategoryFilter() {
+        binding.chipGroupCategories.setOnCheckedStateChangeListener { _, checkedIds ->
+            val checkedId = checkedIds.firstOrNull() ?: R.id.chipAll
+            currentCategory = when (checkedId) {
+                R.id.chipFood -> "Đồ ăn"
+                R.id.chipDrink -> "Đồ uống"
+                R.id.chipSnack -> "Snack"
+                else -> "Tất cả"
+            }
+            filterProducts()
+        }
     }
 
     private fun listenProducts() {
@@ -64,7 +80,7 @@ class ProductManageFragment : Fragment() {
                 for (child in snapshot.children) {
                     child.getValue(Product::class.java)?.let { allProducts.add(it) }
                 }
-                filterProducts(binding.etSearch.text.toString())
+                filterProducts()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -76,9 +92,16 @@ class ProductManageFragment : Fragment() {
         db.addValueEventListener(productListener!!)
     }
 
-    private fun filterProducts(query: String) {
-        val filtered = if (query.isEmpty()) allProducts
-        else allProducts.filter { it.name.contains(query, ignoreCase = true) }
+    private fun filterProducts() {
+        val query = binding.etSearch.text.toString().trim()
+        
+        val filtered = allProducts.filter { product ->
+            val matchSearch = product.name.contains(query, ignoreCase = true)
+            val matchCategory = if (currentCategory == "Tất cả") true 
+                               else product.category == currentCategory
+            matchSearch && matchCategory
+        }
+
         adapter.submitList(filtered.toMutableList())
         binding.tvEmpty.visibility = if (filtered.isEmpty()) View.VISIBLE else View.GONE
     }

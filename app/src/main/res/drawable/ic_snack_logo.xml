@@ -5,22 +5,36 @@
     android:viewportWidth="72"
     android:viewportHeight="72">
 
-    <!-- Bag body -->
+    <!-- Bag body - improved shape with rounded corners and slightly tapered sides -->
     <path
-        android:fillColor="#FF6B35"
-        android:pathData="M18,28L54,28L50,58C50,59.105 49.105,60 48,60L24,60C22.895,60 22,59.105 22,58L18,28Z"/>
+        android:fillColor="#FF3D1E"
+        android:pathData="M19,27 L53,27 L50.5,57.5
+                          C50.5,60.5 48.5,62 46,62 L26,62
+                          C23.5,62 21.5,60.5 21.5,57.5 L19,27Z"/>
 
-    <!-- Bag handle -->
+    <!-- Bag body inner highlight (subtle depth) -->
+    <path
+        android:fillColor="#FF5A38"
+        android:pathData="M21.5,30 L50.5,30 L49,56
+                          C49,58.5 47.5,59.5 45.5,59.5 L26.5,59.5
+                          C24.5,59.5 23,58.5 23,56 L21.5,30Z"/>
+
+    <!-- Bag handle - smoother and thicker with better arch -->
     <path
         android:fillColor="@android:color/transparent"
-        android:pathData="M26,28L26,22C26,17.582 29.582,14 34,14L38,14C42.418,14 46,17.582 46,22L46,28"
-        android:strokeColor="#FF6B35"
-        android:strokeWidth="4"
+        android:pathData="M25,28 L25,23
+                          C25,16.5 30.5,13 36,13
+                          L38,13
+                          C43.5,13 47,16.5 47,23
+                          L47,28"
+        android:strokeColor="#FF3D1E"
+        android:strokeWidth="5.5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"/>
 
-    <!-- Star decoration -->
+    <!-- Star decoration - bigger, bolder, and slightly golden -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M36,35L37.8,40.5L43.5,40.5L39,44L40.8,49.5L36,46L31.2,49.5L33,44L28.5,40.5L34.2,40.5Z"/>
+        android:fillColor="#FFFB8C"
+        android:pathData="M36,34 L38.15,39.8 L44.3,39.8 L39.6,44.2 L41.3,50.2 L36,46.6 L30.7,50.2 L32.4,44.2 L27.7,39.8 L33.85,39.8Z"/>
+
 </vector>
