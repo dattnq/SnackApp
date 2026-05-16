@@ -10,10 +10,11 @@ data class User(
     val email: String = "",
     val role: String = "customer",        // "admin" | "customer"
     val avatarUrl: String = "",
-    val phone: String = ""
+    val phone: String = "",
+    val address: String = ""
 ) {
     // Firebase requires a no-arg constructor
-    constructor() : this("", "", "", "customer", "", "")
+    constructor() : this("", "", "", "customer", "", "", "")
 }
 
 // ==================== PRODUCT ====================

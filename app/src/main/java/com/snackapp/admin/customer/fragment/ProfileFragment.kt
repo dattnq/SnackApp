@@ -77,6 +77,7 @@ class ProfileFragment : Fragment() {
             val user = snap.getValue(User::class.java) ?: return@addOnSuccessListener
             binding.etFullName.setText(user.fullName)
             binding.etPhone.setText(user.phone)
+            binding.etAddress.setText(user.address)
             binding.tvEmail.text = user.email
 
             if (user.avatarUrl.isNotEmpty()) {
@@ -91,6 +92,7 @@ class ProfileFragment : Fragment() {
     private fun saveProfile() {
         val fullName = binding.etFullName.text.toString().trim()
         val phone = binding.etPhone.text.toString().trim()
+        val address = binding.etAddress.text.toString().trim()
 
         if (fullName.isEmpty()) {
             binding.etFullName.error = "Nhập họ tên"
@@ -102,13 +104,13 @@ class ProfileFragment : Fragment() {
         if (selectedImageUri != null) {
             val base64Image = uriToBase64(selectedImageUri!!)
             if (base64Image != null) {
-                uploadAvatarToImgBB(base64Image, fullName, phone)
+                uploadAvatarToImgBB(base64Image, fullName, phone, address)
             } else {
                 showLoading(false)
                 Toast.makeText(context, "Không thể xử lý ảnh", Toast.LENGTH_SHORT).show()
             }
         } else {
-            saveToDb(fullName, phone, null)
+            saveToDb(fullName, phone, address, null)
         }
     }
 
@@ -147,7 +149,7 @@ class ProfileFragment : Fragment() {
         return Bitmap.createScaledBitmap(bitmap, width, height, true)
     }
 
-    private fun uploadAvatarToImgBB(base64Image: String, fullName: String, phone: String) {
+    private fun uploadAvatarToImgBB(base64Image: String, fullName: String, phone: String, address: String) {
         val url = "https://api.imgbb.com/1/upload?key=$IMGBB_API_KEY"
 
         if (_binding != null) {
@@ -163,7 +165,7 @@ class ProfileFragment : Fragment() {
                     val jsonResponse = JSONObject(response)
                     if (jsonResponse.getBoolean("success")) {
                         val imageUrl = jsonResponse.getJSONObject("data").getString("url")
-                        saveToDb(fullName, phone, imageUrl)
+                        saveToDb(fullName, phone, address, imageUrl)
                     } else {
                         showLoading(false)
                         Toast.makeText(ctx, "Lỗi tải ảnh lên ImgBB", Toast.LENGTH_SHORT).show()
@@ -194,10 +196,11 @@ class ProfileFragment : Fragment() {
         queue.add(stringRequest)
     }
 
-    private fun saveToDb(fullName: String, phone: String, avatarUrl: String?) {
+    private fun saveToDb(fullName: String, phone: String, address: String, avatarUrl: String?) {
         val updates = mutableMapOf<String, Any>(
             "fullName" to fullName,
-            "phone" to phone
+            "phone" to phone,
+            "address" to address
         )
         avatarUrl?.let { updates["avatarUrl"] = it }
 

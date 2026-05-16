@@ -13,6 +13,8 @@ class OrderHistoryFragment: Fragment()  {
     private var _binding: FragmentOrderHistoryBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: OrderHistoryAdapter
+    private var databaseQuery: Query? = null
+    private var valueEventListener: ValueEventListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -32,30 +34,42 @@ class OrderHistoryFragment: Fragment()  {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         binding.progressBar.visibility = View.VISIBLE
 
-        FirebaseDatabase.getInstance().getReference("Orders")
+        databaseQuery = FirebaseDatabase.getInstance().getReference("Orders")
             .orderByChild("userId").equalTo(uid)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    binding.progressBar.visibility = View.GONE
-                    val orders = snapshot.children
-                        .mapNotNull { it.getValue(Order::class.java) }
-                        .sortedByDescending { it.orderDate }
+        
+        valueEventListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                // Kiểm tra an toàn: nếu binding đã bị hủy thì thoát
+                if (_binding == null) return
 
-                    adapter.submitList(orders.toMutableList())
-                    binding.tvEmpty.visibility = if (orders.isEmpty()) View.VISIBLE else View.GONE
-                    binding.rvOrders.visibility = if (orders.isEmpty()) View.GONE else View.VISIBLE
+                binding.progressBar.visibility = View.GONE
+                val orders = snapshot.children
+                    .mapNotNull { it.getValue(Order::class.java) }
+                    .sortedByDescending { it.orderDate }
 
-                    // Thống kê chi tiêu
-                    val total = orders.sumOf { it.totalAmount }
-                    binding.tvTotalSpent.text = "Tổng chi tiêu: %.0f₫".format(total)
-                }
+                adapter.submitList(orders.toMutableList())
+                binding.tvEmpty.visibility = if (orders.isEmpty()) View.VISIBLE else View.GONE
+                binding.rvOrders.visibility = if (orders.isEmpty()) View.GONE else View.VISIBLE
 
-                override fun onCancelled(error: DatabaseError) {
-                    binding.progressBar.visibility = View.GONE
-                }
-            })
+                // Thống kê chi tiêu
+                val total = orders.sumOf { it.totalAmount }
+                binding.tvTotalSpent.text = "Tổng chi tiêu: %.0f₫".format(total)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                if (_binding == null) return
+                binding.progressBar.visibility = View.GONE
+            }
+        }
+        
+        databaseQuery?.addValueEventListener(valueEventListener!!)
     }
 
-    override fun onDestroyView() { super.onDestroyView(); _binding = null }
+    override fun onDestroyView() {
+        // Hủy listener khi fragment bị hủy để tránh rò rỉ bộ nhớ và crash
+        valueEventListener?.let { databaseQuery?.removeEventListener(it) }
+        super.onDestroyView()
+        _binding = null
+    }
 
 }

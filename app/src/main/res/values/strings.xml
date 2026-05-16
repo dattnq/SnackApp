@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SnackApp Admin</string>
+    <string name="app_name">SnackApp</string>
 
     <!-- Auth -->
     <string name="label_email">Email</string>
