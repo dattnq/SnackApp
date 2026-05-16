@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/menu/menu_customer_nav.xml — bottom navigation customer -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_menu"
+        android:icon="@drawable/ic_product"
+        android:title="Thực đơn"/>
+    <item
+        android:id="@+id/nav_orders"
+        android:icon="@drawable/ic_order"
+        android:title="Đơn hàng"/>
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_person"
+        android:title="Hồ sơ"/>
+</menu>

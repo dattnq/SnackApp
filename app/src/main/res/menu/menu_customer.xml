@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/menu/menu_customer.xml — toolbar menu -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_cart"
+        android:icon="@drawable/ic_cart"
+        android:title="Giỏ hàng"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_logout"
+        android:title="Đăng xuất"
+        app:showAsAction="never"/>
+</menu>
