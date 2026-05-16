@@ -15,6 +15,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.snackapp.admin.R
 import com.snackapp.admin.admin.AdminMainActivity
+import com.snackapp.admin.customer.CustomerMainActivity
 import com.snackapp.admin.databinding.ActivityLoginBinding
 import com.snackapp.admin.model.User
 
@@ -125,22 +126,28 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
+    /** Đọc role từ Realtime Database rồi điều hướng */
     private fun checkRoleAndNavigate(uid: String) {
         FirebaseDatabase.getInstance().getReference("Users").child(uid)
             .get()
             .addOnSuccessListener { snap ->
                 showLoading(false)
                 val user = snap.getValue(User::class.java)
-                if (user?.role == "admin") {
-                    val intent = Intent(this, AdminMainActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    finish()
+                
+                val intent = if (user?.role == "admin") {
+                    Intent(this, AdminMainActivity::class.java)
                 } else {
-                    Toast.makeText(this, getString(R.string.msg_welcome_user, user?.fullName ?: "Khách"), Toast.LENGTH_SHORT).show()
-                    // Nếu là app admin mà user không phải admin, có thể logout hoặc báo lỗi
-                    // Ở đây tôi giả định bạn cho phép customer vào nhưng có thể hạn chế sau
+                    // Customer → vào CustomerMainActivity
+                    Intent(this, CustomerMainActivity::class.java)
                 }
+                
+                // Hiển thị lời chào
+                Toast.makeText(this, getString(R.string.msg_welcome_user, user?.fullName ?: "Khách"), Toast.LENGTH_SHORT).show()
+                
+                // Xóa stack để không quay lại màn hình Login
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
             }
             .addOnFailureListener {
                 showLoading(false)

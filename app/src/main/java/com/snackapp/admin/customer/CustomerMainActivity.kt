@@ -26,16 +26,29 @@ class CustomerMainActivity : AppCompatActivity(){
         supportActionBar?.title = "SnackApp"
 
         if (savedInstanceState == null) {
-            loadFragment(MenuFragment(), "Menu")
+            loadFragment(MenuFragment(), "Thực đơn")
         }
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_menu    -> loadFragment(MenuFragment(), "Thực đơn")
-                R.id.nav_orders  -> loadFragment(OrderHistoryFragment(), "Đơn hàng của tôi")
-                R.id.nav_profile -> loadFragment(ProfileFragment(), "Hồ sơ")
+                R.id.nav_menu    -> {
+                    loadFragment(MenuFragment(), "Thực đơn")
+                    true
+                }
+                R.id.nav_orders  -> {
+                    loadFragment(OrderHistoryFragment(), "Đơn hàng của tôi")
+                    true
+                }
+                R.id.nav_profile -> {
+                    loadFragment(ProfileFragment(), "Hồ sơ")
+                    true
+                }
+                R.id.nav_cart    -> {
+                    startActivity(Intent(this, CartActivity::class.java))
+                    false // Return false so the cart item doesn't stay selected
+                }
+                else -> false
             }
-            true
         }
 
         // Lắng nghe thay đổi giỏ hàng để cập nhật badge

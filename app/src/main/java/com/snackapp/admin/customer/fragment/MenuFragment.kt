@@ -1,4 +1,5 @@
 package com.snackapp.admin.customer.fragment
+
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -29,7 +30,6 @@ class MenuFragment : Fragment(){
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // Grid 2 cột
         adapter = MenuAdapter { product ->
             val intent = Intent(requireContext(), ProductDetailActivity::class.java)
             intent.putExtra(ProductDetailActivity.EXTRA_PRODUCT_ID, product.productId)
@@ -38,7 +38,6 @@ class MenuFragment : Fragment(){
         binding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvProducts.adapter = adapter
 
-        // Search
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) = filterProducts()
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -49,10 +48,13 @@ class MenuFragment : Fragment(){
     }
 
     private fun loadProducts() {
+        if (_binding == null) return
         binding.progressBar.visibility = View.VISIBLE
+        
         FirebaseDatabase.getInstance().getReference("Products")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if (_binding == null) return
                     binding.progressBar.visibility = View.GONE
                     allProducts.clear()
                     categories.clear()
@@ -71,12 +73,14 @@ class MenuFragment : Fragment(){
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    if (_binding == null) return
                     binding.progressBar.visibility = View.GONE
                 }
             })
     }
 
     private fun setupCategoryChips() {
+        if (_binding == null) return
         binding.chipGroupCategory.removeAllViews()
         categories.forEach { cat ->
             val chip = com.google.android.material.chip.Chip(requireContext()).apply {
@@ -93,6 +97,7 @@ class MenuFragment : Fragment(){
     }
 
     private fun filterProducts() {
+        if (_binding == null) return
         val query = binding.etSearch.text.toString().trim()
         val filtered = allProducts.filter { p ->
             val matchCat = selectedCategory == "Tất cả" || p.category == selectedCategory

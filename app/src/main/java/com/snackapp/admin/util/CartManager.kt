@@ -7,7 +7,7 @@ import com.snackapp.admin.model.Product
  * Dùng object thay vì class để đảm bảo chỉ có 1 instance.
  */
 
-class CartManager {
+object CartManager {
     private val items = mutableListOf<CartItem>()
 
     /** Thêm sản phẩm vào giỏ. Nếu đã có thì tăng số lượng. */

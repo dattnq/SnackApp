@@ -7,7 +7,7 @@ import com.google.firebase.database.FirebaseDatabase
  * Lưu lên Firebase: Users/{uid}/wishlist/{productId} = true
  */
 
-class WishlistManager {
+object WishlistManager {
     private val wishlist = mutableSetOf<String>() // productId set
     private val db get() = FirebaseDatabase.getInstance().reference
     private val uid get() = FirebaseAuth.getInstance().currentUser?.uid

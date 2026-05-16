@@ -1,5 +1,9 @@
 package com.snackapp.admin.customer
+
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -115,6 +119,23 @@ class ProductDetailActivity : AppCompatActivity(){
         binding.tvSubtotal.text = "Tạm tính: %.0f₫".format(p.price * quantity)
     }
 
-    override fun onSupportNavigateUp(): Boolean { finish(); return true }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_customer, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+            R.id.action_cart -> {
+                startActivity(Intent(this, CartActivity::class.java))
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
 }

@@ -15,6 +15,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 import com.snackapp.admin.R
 import com.snackapp.admin.admin.AdminMainActivity
+import com.snackapp.admin.customer.CustomerMainActivity
 import com.snackapp.admin.databinding.ActivityRegisterBinding
 import com.snackapp.admin.model.User
 
@@ -34,8 +35,11 @@ class RegisterActivity : AppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)!!
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
+                showLoading(false)
                 Toast.makeText(this, "Google Sign-In failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+        } else {
+            showLoading(false)
         }
     }
 
@@ -54,12 +58,12 @@ class RegisterActivity : AppCompatActivity() {
         binding.btnRegister.setOnClickListener { doRegister() }
         binding.tvLogin.setOnClickListener { finish() }
         binding.btnGoogleRegister.setOnClickListener {
+            showLoading(true)
             googleSignInLauncher.launch(googleSignInClient.signInIntent)
         }
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
-        showLoading(true)
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnSuccessListener { result ->
@@ -76,10 +80,10 @@ class RegisterActivity : AppCompatActivity() {
             if (!snap.exists()) {
                 val user = User(
                     uid = firebaseUser.uid,
-                    fullName = firebaseUser.displayName ?: "",
+                    fullName = firebaseUser.displayName ?: "Người dùng Google",
                     email = firebaseUser.email ?: "",
                     role = "customer",
-                    avatarUrl = firebaseUser.photoUrl.toString()
+                    avatarUrl = firebaseUser.photoUrl?.toString() ?: ""
                 )
                 db.child(firebaseUser.uid).setValue(user).addOnSuccessListener {
                     checkRoleAndNavigate(firebaseUser.uid)
@@ -104,10 +108,12 @@ class RegisterActivity : AppCompatActivity() {
         }
         if (password != confirm) {
             binding.etConfirmPassword.error = getString(R.string.err_password_mismatch)
+            binding.etConfirmPassword.requestFocus()
             return
         }
         if (password.length < 6) {
             binding.etPassword.error = getString(R.string.err_password_too_short)
+            binding.etPassword.requestFocus()
             return
         }
 
@@ -123,7 +129,6 @@ class RegisterActivity : AppCompatActivity() {
                 )
                 db.child(uid).setValue(user)
                     .addOnSuccessListener {
-                        showLoading(false)
                         Toast.makeText(this, getString(R.string.msg_register_success), Toast.LENGTH_SHORT).show()
                         checkRoleAndNavigate(uid)
                     }
@@ -142,18 +147,19 @@ class RegisterActivity : AppCompatActivity() {
         db.child(uid).get().addOnSuccessListener { snap ->
             showLoading(false)
             val user = snap.getValue(User::class.java)
-            if (user?.role == "admin") {
-                val intent = Intent(this, AdminMainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
+            val intent = if (user?.role == "admin") {
+                Intent(this, AdminMainActivity::class.java)
             } else {
-                Toast.makeText(this, getString(R.string.msg_welcome_user, user?.fullName ?: "Khách"), Toast.LENGTH_SHORT).show()
-                finish()
+                Intent(this, CustomerMainActivity::class.java)
             }
+            Toast.makeText(this, getString(R.string.msg_welcome_user, user?.fullName ?: "Khách"), Toast.LENGTH_SHORT).show()
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
         }.addOnFailureListener {
             showLoading(false)
             auth.signOut()
+            Toast.makeText(this, "Lỗi tải dữ liệu người dùng", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -6,6 +6,10 @@
         android:icon="@drawable/ic_product"
         android:title="Thực đơn"/>
     <item
+        android:id="@+id/nav_cart"
+        android:icon="@drawable/ic_cart"
+        android:title="Giỏ hàng"/>
+    <item
         android:id="@+id/nav_orders"
         android:icon="@drawable/ic_order"
         android:title="Đơn hàng"/>
