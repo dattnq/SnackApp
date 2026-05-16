@@ -3,6 +3,7 @@ package com.snackapp.admin.customer
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
@@ -14,7 +15,7 @@ import com.snackapp.admin.customer.fragment.ProfileFragment
 import com.snackapp.admin.databinding.ActivityCustomerMainBinding
 import com.snackapp.admin.util.CartManager
 
-class CustomerMainActivity : AppCompatActivity(){
+class CustomerMainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCustomerMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,49 +24,38 @@ class CustomerMainActivity : AppCompatActivity(){
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = "SnackApp"
 
+        setupNavigation()
+        
+        // Mặc định mở Menu
         if (savedInstanceState == null) {
-            loadFragment(MenuFragment(), "Thực đơn")
+            replaceFragment(MenuFragment())
         }
 
-        binding.bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_menu    -> {
-                    loadFragment(MenuFragment(), "Thực đơn")
-                    true
-                }
-                R.id.nav_orders  -> {
-                    loadFragment(OrderHistoryFragment(), "Đơn hàng của tôi")
-                    true
-                }
-                R.id.nav_profile -> {
-                    loadFragment(ProfileFragment(), "Hồ sơ")
-                    true
-                }
-                R.id.nav_cart    -> {
-                    startActivity(Intent(this, CartActivity::class.java))
-                    false // Return false so the cart item doesn't stay selected
-                }
-                else -> false
-            }
-        }
-
-        // Lắng nghe thay đổi giỏ hàng để cập nhật badge
         CartManager.addListener { updateCartBadge() }
         updateCartBadge()
     }
 
-    private fun loadFragment(fragment: Fragment, title: String) {
-        supportActionBar?.title = title
+    private fun setupNavigation() {
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_menu    -> replaceFragment(MenuFragment())
+                R.id.nav_orders  -> replaceFragment(OrderHistoryFragment())
+                R.id.nav_profile -> replaceFragment(ProfileFragment())
+            }
+            true
+        }
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, fragment)
             .commit()
     }
 
-    fun updateCartBadge() {
+    private fun updateCartBadge() {
         val count = CartManager.getTotalQuantity()
-        val badge = binding.bottomNav.getOrCreateBadge(R.id.nav_cart)
+        val badge = binding.bottomNav.getOrCreateBadge(R.id.nav_menu) // Hoặc vị trí khác tùy layout
         if (count > 0) {
             badge.isVisible = true
             badge.number   = count
@@ -85,18 +75,32 @@ class CustomerMainActivity : AppCompatActivity(){
                 startActivity(Intent(this, CartActivity::class.java))
             }
             R.id.action_logout -> {
-                FirebaseAuth.getInstance().signOut()
-                CartManager.clear()
-                startActivity(Intent(this, LoginActivity::class.java))
-                finishAffinity()
+                showLogoutConfirmation()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showLogoutConfirmation() {
+        AlertDialog.Builder(this)
+            .setTitle("Xác nhận đăng xuất")
+            .setMessage("Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng không?")
+            .setPositiveButton("Đăng xuất") { _, _ ->
+                performLogout()
+            }
+            .setNegativeButton("Hủy", null)
+            .show()
+    }
+
+    private fun performLogout() {
+        FirebaseAuth.getInstance().signOut()
+        CartManager.clear()
+        startActivity(Intent(this, LoginActivity::class.java))
+        finishAffinity()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         CartManager.removeListener { updateCartBadge() }
     }
-
 }
