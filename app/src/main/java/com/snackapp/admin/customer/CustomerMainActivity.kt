@@ -39,11 +39,24 @@ class CustomerMainActivity : AppCompatActivity() {
     private fun setupNavigation() {
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_menu    -> replaceFragment(MenuFragment())
-                R.id.nav_orders  -> replaceFragment(OrderHistoryFragment())
-                R.id.nav_profile -> replaceFragment(ProfileFragment())
+                R.id.nav_menu    -> {
+                    replaceFragment(MenuFragment())
+                    true
+                }
+                R.id.nav_cart    -> {
+                    startActivity(Intent(this, CartActivity::class.java))
+                    false // Trả về false để giữ focus ở tab hiện tại khi quay lại từ giỏ hàng
+                }
+                R.id.nav_orders  -> {
+                    replaceFragment(OrderHistoryFragment())
+                    true
+                }
+                R.id.nav_profile -> {
+                    replaceFragment(ProfileFragment())
+                    true
+                }
+                else -> false
             }
-            true
         }
     }
 
@@ -55,7 +68,8 @@ class CustomerMainActivity : AppCompatActivity() {
 
     private fun updateCartBadge() {
         val count = CartManager.getTotalQuantity()
-        val badge = binding.bottomNav.getOrCreateBadge(R.id.nav_menu) // Hoặc vị trí khác tùy layout
+        // Hiển thị badge trên icon giỏ hàng (R.id.nav_cart)
+        val badge = binding.bottomNav.getOrCreateBadge(R.id.nav_cart)
         if (count > 0) {
             badge.isVisible = true
             badge.number   = count
