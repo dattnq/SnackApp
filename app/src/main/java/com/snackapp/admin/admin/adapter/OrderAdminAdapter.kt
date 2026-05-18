@@ -29,6 +29,7 @@ class OrderAdminAdapter(
         with(holder.binding) {
             tvOrderId.text = context.getString(R.string.order_id_format, order.orderId.takeLast(6).uppercase())
             tvCustomerName.text = order.customerName
+            tvCustomerPhone.text = order.customerPhone
             tvOrderDate.text = order.orderDate
             tvTotal.text = String.format(Locale("vi", "VN"), "%,.0f₫", order.totalAmount)
             tvAddress.text = order.address

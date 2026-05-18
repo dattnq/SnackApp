@@ -54,6 +54,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <!-- Phone number -->
+        <TextView
+            android:id="@+id/tvCustomerPhone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:drawableStart="@drawable/ic_phone"
+            android:drawablePadding="6dp"
+            android:textSize="12sp"
+            android:textColor="@color/text_secondary"
+            app:layout_constraintTop_toBottomOf="@id/tvCustomerName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <!-- Order date -->
         <TextView
             android:id="@+id/tvOrderDate"
@@ -64,7 +78,7 @@
             android:drawablePadding="6dp"
             android:textSize="12sp"
             android:textColor="@color/text_secondary"
-            app:layout_constraintTop_toBottomOf="@id/tvCustomerName"
+            app:layout_constraintTop_toBottomOf="@id/tvCustomerPhone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
