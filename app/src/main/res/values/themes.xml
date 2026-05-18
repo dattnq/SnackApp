@@ -21,4 +21,10 @@
         <item name="chipStrokeWidth">0.5dp</item>
     </style>
 
+    <!-- Shape appearance for circular images -->
+    <style name="ShapeAppearance.App.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

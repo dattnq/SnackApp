@@ -39,6 +39,7 @@
     <string name="nav_dashboard">Thống kê</string>
     <string name="nav_products">Sản phẩm</string>
     <string name="nav_orders">Đơn hàng</string>
+    <string name="nav_customers">Khách hàng</string>
 
     <!-- Product -->
     <string name="label_product_name">Tên sản phẩm *</string>
@@ -120,4 +121,14 @@
     <string name="msg_status_updated">Đã cập nhật trạng thái</string>
     <string name="msg_register_success">Đăng ký thành công!</string>
     <string name="msg_welcome_user">Xin chào %1$s</string>
+
+    <!-- Customer Management -->
+    <string name="title_customer_manage">Quản lý khách hàng</string>
+    <string name="hint_search_customers">Tìm kiếm khách hàng...</string>
+    <string name="msg_customer_updated">Đã cập nhật thông tin khách hàng</string>
+    <string name="msg_customer_deleted">Đã xóa tài khoản khách hàng</string>
+    <string name="msg_empty_customers">Không tìm thấy khách hàng</string>
+    <string name="label_customer_count">Tổng cộng %1$d khách hàng</string>
+    <string name="label_customer_search_result">Tìm thấy %1$d / %2$d khách hàng</string>
+    <string name="err_name_empty">Tên không được để trống</string>
 </resources>

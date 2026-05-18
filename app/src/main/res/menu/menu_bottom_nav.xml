@@ -17,4 +17,9 @@
         android:icon="@drawable/ic_order"
         android:title="Đơn hàng"/>
 
+    <item
+        android:id="@+id/nav_customers"
+        android:icon="@drawable/ic_person"
+        android:title="Khách hàng"/>
+
 </menu>

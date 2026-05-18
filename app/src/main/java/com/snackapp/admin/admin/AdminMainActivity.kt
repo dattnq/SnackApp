@@ -11,6 +11,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.snackapp.admin.R
+import com.snackapp.admin.admin.fragment.CustomerManageFragment
 import com.snackapp.admin.admin.fragment.DashboardFragment
 import com.snackapp.admin.admin.fragment.OrderManageFragment
 import com.snackapp.admin.admin.fragment.ProductManageFragment
@@ -27,7 +28,7 @@ class AdminMainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
-        
+
         if (savedInstanceState == null) {
             loadFragment(DashboardFragment(), getString(R.string.nav_dashboard))
         }
@@ -44,6 +45,10 @@ class AdminMainActivity : AppCompatActivity() {
                 }
                 R.id.nav_orders    -> {
                     loadFragment(OrderManageFragment(), getString(R.string.nav_orders))
+                    true
+                }
+                R.id.nav_customers -> {
+                    loadFragment(CustomerManageFragment(), getString(R.string.nav_customers))
                     true
                 }
                 else -> false
