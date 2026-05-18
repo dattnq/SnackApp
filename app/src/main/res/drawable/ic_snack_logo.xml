@@ -1,40 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="72dp"
-    android:height="72dp"
-    android:viewportWidth="72"
-    android:viewportHeight="72">
+    android:width="300dp"
+    android:height="150dp"
+    android:viewportWidth="300"
+    android:viewportHeight="150">
 
-    <!-- Bag body - improved shape with rounded corners and slightly tapered sides -->
-    <path
-        android:fillColor="#FF3D1E"
-        android:pathData="M19,27 L53,27 L50.5,57.5
-                          C50.5,60.5 48.5,62 46,62 L26,62
-                          C23.5,62 21.5,60.5 21.5,57.5 L19,27Z"/>
+    <!-- ══════════════════════════════════════════════════════
+         Toàn bộ logo nghiêng -8° quanh tâm (140, 70)
+         ══════════════════════════════════════════════════════ -->
+    <group
+        android:pivotX="140"
+        android:pivotY="70"
+        android:rotation="-8">
 
-    <!-- Bag body inner highlight (subtle depth) -->
-    <path
-        android:fillColor="#FF5A38"
-        android:pathData="M21.5,30 L50.5,30 L49,56
-                          C49,58.5 47.5,59.5 45.5,59.5 L26.5,59.5
-                          C24.5,59.5 23,58.5 23,56 L21.5,30Z"/>
+        <!-- Bóng đổ -->
+        <path
+            android:fillColor="#30000000"
+            android:translateX="3"
+            android:translateY="6"
+            android:pathData="M16,70 A124,52 0 1 0 264,70 A124,52 0 1 0 16,70 Z"/>
 
-    <!-- Bag handle - smoother and thicker with better arch -->
-    <path
-        android:fillColor="@android:color/transparent"
-        android:pathData="M25,28 L25,23
-                          C25,16.5 30.5,13 36,13
-                          L38,13
-                          C43.5,13 47,16.5 47,23
-                          L47,28"
-        android:strokeColor="#FF3D1E"
-        android:strokeWidth="5.5"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"/>
+        <!-- Viền oval (tạo depth) -->
+        <path
+            android:fillColor="#E47608"
+            android:pathData="M14,70 A126,54 0 1 0 266,70 A126,54 0 1 0 14,70 Z"/>
 
-    <!-- Star decoration - bigger, bolder, and slightly golden -->
-    <path
-        android:fillColor="#FFFB8C"
-        android:pathData="M36,34 L38.15,39.8 L44.3,39.8 L39.6,44.2 L41.3,50.2 L36,46.6 L30.7,50.2 L32.4,44.2 L27.7,39.8 L33.85,39.8Z"/>
+        <!-- Thân oval cam chính -->
+        <path
+            android:fillColor="#FD9B54"
+            android:pathData="M16,70 A124,52 0 1 0 264,70 A124,52 0 1 0 16,70 Z"/>
+
+        <!-- Highlight trắng mờ phía trên (hiệu ứng 3D) -->
+        <path
+            android:fillColor="#22FFFFFF"
+            android:pathData="M 50,43 C 85,28 168,26 224,39 C 198,33 108,31 64,46 Z"/>
+
+        <!-- S -->
+        <group
+            android:translateX="43.5000"
+            android:translateY="96.0000"
+            android:scaleX="0.039140"
+            android:scaleY="-0.047619">
+            <path android:fillColor="#FFFFFF" android:pathData="M42 210H224Q228 171 251.0 150.5Q274 130 311 130Q349 130 371.0 147.5Q393 165 393 196Q393 222 375.5 239.0Q358 256 332.5 267.0Q307 278 260 292Q192 313 149.0 334.0Q106 355 75.0 396.0Q44 437 44 503Q44 601 115.0 656.5Q186 712 300 712Q416 712 487.0 656.5Q558 601 563 502H378Q376 536 353.0 555.5Q330 575 294 575Q263 575 244.0 558.5Q225 542 225 511Q225 477 257.0 458.0Q289 439 357 417Q425 394 467.5 373.0Q510 352 541.0 312.0Q572 272 572 209Q572 149 541.5 100.0Q511 51 453.0 22.0Q395 -7 316 -7Q239 -7 178.0 18.0Q117 43 80.5 92.0Q44 141 42 210Z"/>
+        </group>
+        <!-- N -->
+        <group
+            android:translateX="67.5712"
+            android:translateY="96.0000"
+            android:scaleX="0.039140"
+            android:scaleY="-0.047619">
+            <path android:fillColor="#FFFFFF" android:pathData="M690 0H519L233 433V0H62V702H233L519 267V702H690Z"/>
+        </group>
+        <!-- A -->
+        <group
+            android:translateX="97.0046"
+            android:translateY="96.0000"
+            android:scaleX="0.039140"
+            android:scaleY="-0.047619">
+            <path android:fillColor="#FFFFFF" android:pathData="M499 124H237L195 0H16L270 702H468L722 0H541ZM455 256 368 513 282 256Z"/>
+        </group>
+        <!-- C -->
+        <group
+            android:translateX="125.8508"
+            android:translateY="96.0000"
+            android:scaleX="0.039140"
+            android:scaleY="-0.047619">
+            <path android:fillColor="#FFFFFF" android:pathData="M386 710Q511 710 600.0 644.0Q689 578 719 464H531Q510 508 471.5 531.0Q433 554 384 554Q305 554 256.0 499.0Q207 444 207 352Q207 260 256.0 205.0Q305 150 384 150Q433 150 471.5 173.0Q510 196 531 240H719Q689 126 600.0 60.5Q511 -5 386 -5Q284 -5 203.5 40.5Q123 86 78.0 167.0Q33 248 33 352Q33 456 78.0 537.5Q123 619 203.5 664.5Q284 710 386 710Z"/>
+        </group>
+        <!-- K -->
+        <group
+            android:translateX="155.6756"
+            android:translateY="96.0000"
+            android:scaleX="0.039140"
+            android:scaleY="-0.047619">
+            <path android:fillColor="#FFFFFF" android:pathData="M469 0 233 310V0H62V702H233V394L467 702H668L396 358L678 0Z"/>
+        </group>
+        <!-- K -->
+        <group
+            android:translateX="182.9563"
+            android:translateY="96.0000"
+            android:scaleX="0.039140"
+            android:scaleY="-0.047619">
+            <path android:fillColor="#FFFFFF" android:pathData="M469 0 233 310V0H62V702H233V394L467 702H668L396 358L678 0Z"/>
+        </group>
+        <!-- Y -->
+        <group
+            android:translateX="210.2370"
+            android:translateY="96.0000"
+            android:scaleX="0.039140"
+            android:scaleY="-0.047619">
+            <path android:fillColor="#FFFFFF" android:pathData="M664 702 421 232V0H250V232L7 702H201L337 408L472 702Z"/>
+        </group>
+
+    </group>
 
 </vector>

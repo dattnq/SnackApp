@@ -48,13 +48,13 @@
     <string name="label_expire_date">Hạn SD (dd/MM/yyyy)</string>
     <string name="label_description">Mô tả sản phẩm</string>
     <string name="btn_save_product">Lưu sản phẩm</string>
-    <string name="btn_add_product">Thêm món</string>
+    <string name="btn_add_product">Thêm sản phẩm</string>
     <string name="title_add_product">Thêm sản phẩm</string>
     <string name="title_edit_product">Sửa sản phẩm</string>
     <string name="hint_pick_image">Chọn ảnh</string>
     <string name="hint_change_image">Đổi ảnh sản phẩm</string>
     <string name="msg_empty_products">Chưa có sản phẩm nào</string>
-    <string name="msg_upload_progress">Đang tải ảnh lên ImgBB... %1$d%%</string>
+    <string name="msg_upload_progress">Đang tải ảnh lên... %1$d%%</string>
     <string name="hint_search_products">Tìm kiếm sản phẩm...</string>
     <string name="label_stock_sold_format">Tồn: %1$d | Đã bán: %2$d</string>
 

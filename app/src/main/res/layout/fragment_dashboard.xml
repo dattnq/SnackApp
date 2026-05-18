@@ -164,30 +164,34 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
                 app:cardBackgroundColor="@color/card_bg">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="16dp">
+
                     <View
                         android:layout_width="12dp"
                         android:layout_height="12dp"
-                        android:background="@drawable/bg_dot_orange"/>
+                        android:background="@drawable/bg_dot_orange" />
+
                     <TextView
                         android:id="@+id/tvPending"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="--"
+                        android:textColor="@color/primary_orange"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary_orange"/>
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Đang xử lý"
-                        android:textSize="11sp"
-                        android:textColor="@color/text_secondary"/>
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

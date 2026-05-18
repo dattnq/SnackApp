@@ -4,7 +4,7 @@
     <item
         android:id="@+id/nav_menu"
         android:icon="@drawable/ic_product"
-        android:title="Thực đơn"/>
+        android:title="Sản phẩm"/>
     <item
         android:id="@+id/nav_cart"
         android:icon="@drawable/ic_cart"
