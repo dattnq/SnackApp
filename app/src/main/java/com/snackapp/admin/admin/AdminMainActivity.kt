@@ -7,6 +7,8 @@ import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.snackapp.admin.R
 import com.snackapp.admin.admin.fragment.DashboardFragment
@@ -75,7 +77,16 @@ class AdminMainActivity : AppCompatActivity() {
             .setTitle(R.string.dialog_confirm_logout_title)
             .setMessage(R.string.dialog_confirm_logout_msg)
             .setPositiveButton(R.string.btn_logout_confirm) { _, _ ->
+                // 1. Sign out từ Firebase
                 FirebaseAuth.getInstance().signOut()
+
+                // 2. Sign out từ Google
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id))
+                    .build()
+                GoogleSignIn.getClient(this, gso).signOut()
+
+                // 3. Quay về màn hình Login
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)

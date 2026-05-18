@@ -6,6 +6,8 @@ import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.snackapp.admin.R
 import com.snackapp.admin.auth.LoginActivity
@@ -27,7 +29,6 @@ class CustomerMainActivity : AppCompatActivity() {
 
         setupNavigation()
         
-        // Mặc định mở Menu
         if (savedInstanceState == null) {
             replaceFragment(MenuFragment())
         }
@@ -45,7 +46,7 @@ class CustomerMainActivity : AppCompatActivity() {
                 }
                 R.id.nav_cart    -> {
                     startActivity(Intent(this, CartActivity::class.java))
-                    false // Trả về false để giữ focus ở tab hiện tại khi quay lại từ giỏ hàng
+                    false
                 }
                 R.id.nav_orders  -> {
                     replaceFragment(OrderHistoryFragment())
@@ -68,7 +69,6 @@ class CustomerMainActivity : AppCompatActivity() {
 
     private fun updateCartBadge() {
         val count = CartManager.getTotalQuantity()
-        // Hiển thị badge trên icon giỏ hàng (R.id.nav_cart)
         val badge = binding.bottomNav.getOrCreateBadge(R.id.nav_cart)
         if (count > 0) {
             badge.isVisible = true
@@ -107,10 +107,23 @@ class CustomerMainActivity : AppCompatActivity() {
     }
 
     private fun performLogout() {
+        // 1. Sign out từ Firebase
         FirebaseAuth.getInstance().signOut()
+
+        // 2. Sign out từ Google (để lần sau có thể chọn tài khoản khác)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .build()
+        GoogleSignIn.getClient(this, gso).signOut()
+
+        // 3. Xóa giỏ hàng
         CartManager.clear()
-        startActivity(Intent(this, LoginActivity::class.java))
-        finishAffinity()
+
+        // 4. Quay về Login
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 
     override fun onDestroy() {

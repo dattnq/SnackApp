@@ -2,6 +2,9 @@
 <resources>
     <string name="app_name">Snackky</string>
 
+    <!-- Google Auth -->
+    <string name="default_web_client_id">930790941454-leupu5rdoib9q56kgmdgm6svalqo6ed3.apps.googleusercontent.com</string>
+
     <!-- Auth -->
     <string name="label_email">Email</string>
     <string name="label_password">Mật khẩu</string>
@@ -18,9 +21,6 @@
     <string name="link_forgot_password">Quên mật khẩu?</string>
     <string name="hint_welcome_back">Chào mừng trở lại</string>
     <string name="hint_create_account">Tạo tài khoản</string>
-
-    <!-- Google Auth Placeholder -->
-    <string name="default_web_client_id">930790941454-placeholder.apps.googleusercontent.com</string>
 
     <!-- Forgot Password -->
     <string name="title_forgot_password">Quên mật khẩu</string>

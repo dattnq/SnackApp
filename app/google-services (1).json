@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "930790941454",
+    "firebase_url": "https://snackapp-66436-default-rtdb.firebaseio.com",
+    "project_id": "snackapp-66436",
+    "storage_bucket": "snackapp-66436.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:930790941454:android:258ca1598cf25de88cad5f",
+        "android_client_info": {
+          "package_name": "com.snackapp.admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "930790941454-9lsldo6o3brhd0ipvfjmtn4mql2ann44.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.snackapp.admin",
+            "certificate_hash": "55fd70c7f79a154ed14ddc1aa8126f5146249483"
+          }
+        },
+        {
+          "client_id": "930790941454-leupu5rdoib9q56kgmdgm6svalqo6ed3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpyQalSZdc-jC_yIhgAWviN6ALCC5nqN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "930790941454-leupu5rdoib9q56kgmdgm6svalqo6ed3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,6 +2,7 @@ package com.snackapp.admin.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +24,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val auth = FirebaseAuth.getInstance()
+    private val db = FirebaseDatabase.getInstance().getReference("Users")
     private lateinit var googleSignInClient: GoogleSignInClient
 
     private val googleSignInLauncher = registerForActivityResult(
@@ -35,10 +37,14 @@ class LoginActivity : AppCompatActivity() {
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 showLoading(false)
-                Toast.makeText(this, "Google Sign-In failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                val errorMsg = "Lỗi Google (Code: ${e.statusCode}): ${e.message}"
+                Log.e("LoginActivity", errorMsg)
+                Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
+                // Nếu Code = 10: Hãy kiểm tra lại SHA-1 và Web Client ID trong Firebase
             }
         } else {
             showLoading(false)
+            Log.d("LoginActivity", "Người dùng đã hủy đăng nhập hoặc lỗi khác (ResultCode: ${result.resultCode})")
         }
     }
 
@@ -47,15 +53,18 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup Google Sign-In
+        // Cấu hình Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // Check current user
-        auth.currentUser?.let { checkRoleAndNavigate(it.uid) }
+        // Kiểm tra phiên đăng nhập hiện tại
+        auth.currentUser?.let { 
+            showLoading(true)
+            checkRoleAndNavigate(it.uid) 
+        }
 
         binding.btnLogin.setOnClickListener { doLogin() }
         binding.btnRegister.setOnClickListener {
@@ -79,21 +88,20 @@ class LoginActivity : AppCompatActivity() {
                     firebaseUser?.let { saveUserToDatabaseIfNew(it) }
                 } else {
                     showLoading(false)
-                    Toast.makeText(this, "Xác thực Firebase thất bại: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Xác thực Firebase thất bại", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
     private fun saveUserToDatabaseIfNew(firebaseUser: com.google.firebase.auth.FirebaseUser) {
-        val db = FirebaseDatabase.getInstance().getReference("Users")
         db.child(firebaseUser.uid).get().addOnSuccessListener { snap ->
             if (!snap.exists()) {
                 val user = User(
                     uid = firebaseUser.uid,
-                    fullName = firebaseUser.displayName ?: "Người dùng Google",
+                    fullName = firebaseUser.displayName ?: "Người dùng Gmail",
                     email = firebaseUser.email ?: "",
-                    role = "customer", // Mặc định là customer, admin phải set tay trong DB
-                    avatarUrl = firebaseUser.photoUrl.toString()
+                    role = "customer",
+                    avatarUrl = firebaseUser.photoUrl?.toString() ?: ""
                 )
                 db.child(firebaseUser.uid).setValue(user).addOnSuccessListener {
                     checkRoleAndNavigate(firebaseUser.uid)
@@ -122,38 +130,30 @@ class LoginActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 showLoading(false)
-                Toast.makeText(this, getString(R.string.err_login_failed, e.message), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Đăng nhập thất bại: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
-    /** Đọc role từ Realtime Database rồi điều hướng */
     private fun checkRoleAndNavigate(uid: String) {
-        FirebaseDatabase.getInstance().getReference("Users").child(uid)
-            .get()
-            .addOnSuccessListener { snap ->
-                showLoading(false)
-                val user = snap.getValue(User::class.java)
-                
-                val intent = if (user?.role == "admin") {
-                    Intent(this, AdminMainActivity::class.java)
-                } else {
-                    // Customer → vào CustomerMainActivity
-                    Intent(this, CustomerMainActivity::class.java)
-                }
-                
-                // Hiển thị lời chào
-                Toast.makeText(this, getString(R.string.msg_welcome_user, user?.fullName ?: "Khách"), Toast.LENGTH_SHORT).show()
-                
-                // Xóa stack để không quay lại màn hình Login
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-                finish()
+        db.child(uid).get().addOnSuccessListener { snap ->
+            showLoading(false)
+            val user = snap.getValue(User::class.java)
+            
+            val intent = if (user?.role == "admin") {
+                Intent(this, AdminMainActivity::class.java)
+            } else {
+                Intent(this, CustomerMainActivity::class.java)
             }
-            .addOnFailureListener {
-                showLoading(false)
-                Toast.makeText(this, getString(R.string.err_load_user), Toast.LENGTH_SHORT).show()
-                auth.signOut()
-            }
+            
+            Toast.makeText(this, getString(R.string.msg_welcome_user, user?.fullName ?: "Bạn"), Toast.LENGTH_SHORT).show()
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }.addOnFailureListener {
+            showLoading(false)
+            Toast.makeText(this, "Không thể tải hồ sơ", Toast.LENGTH_SHORT).show()
+            auth.signOut()
+        }
     }
 
     private fun showLoading(show: Boolean) {

@@ -153,8 +153,9 @@
                     android:textColor="@color/text_primary"
                     app:cornerRadius="12dp"
                     app:strokeColor="#BDBDBD"
-                    app:icon="@android:drawable/ic_menu_help"
-                    app:iconTint="@android:color/transparent"
+                    app:icon="@drawable/ic_google"
+                    app:iconTint="@null"
+                    app:iconPadding="8dp"
                     android:textAllCaps="false"/>
 
                 <LinearLayout

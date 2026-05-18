@@ -36,7 +36,7 @@ class RegisterActivity : AppCompatActivity() {
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 showLoading(false)
-                Toast.makeText(this, "Google Sign-In failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Lỗi Google: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         } else {
             showLoading(false)
@@ -48,7 +48,7 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup Google Sign-In
+        // Cấu hình Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -66,12 +66,14 @@ class RegisterActivity : AppCompatActivity() {
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
-            .addOnSuccessListener { result ->
-                saveUserToDatabaseIfNew(result.user!!)
-            }
-            .addOnFailureListener { e ->
-                showLoading(false)
-                Toast.makeText(this, "Auth failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val firebaseUser = auth.currentUser
+                    firebaseUser?.let { saveUserToDatabaseIfNew(it) }
+                } else {
+                    showLoading(false)
+                    Toast.makeText(this, "Xác thực Firebase thất bại", Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
@@ -80,7 +82,7 @@ class RegisterActivity : AppCompatActivity() {
             if (!snap.exists()) {
                 val user = User(
                     uid = firebaseUser.uid,
-                    fullName = firebaseUser.displayName ?: "Người dùng Google",
+                    fullName = firebaseUser.displayName ?: "Người dùng Gmail",
                     email = firebaseUser.email ?: "",
                     role = "customer",
                     avatarUrl = firebaseUser.photoUrl?.toString() ?: ""
@@ -134,12 +136,12 @@ class RegisterActivity : AppCompatActivity() {
                     }
                     .addOnFailureListener { e ->
                         showLoading(false)
-                        Toast.makeText(this, getString(R.string.err_save_failed, e.message), Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Lỗi lưu dữ liệu: ${e.message}", Toast.LENGTH_LONG).show()
                     }
             }
             .addOnFailureListener { e ->
                 showLoading(false)
-                Toast.makeText(this, getString(R.string.err_register_failed, e.message), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Đăng ký thất bại: ${e.message}", Toast.LENGTH_LONG).show()
             }
     }
 
@@ -152,14 +154,14 @@ class RegisterActivity : AppCompatActivity() {
             } else {
                 Intent(this, CustomerMainActivity::class.java)
             }
-            Toast.makeText(this, getString(R.string.msg_welcome_user, user?.fullName ?: "Khách"), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.msg_welcome_user, user?.fullName ?: "Bạn"), Toast.LENGTH_SHORT).show()
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
         }.addOnFailureListener {
             showLoading(false)
             auth.signOut()
-            Toast.makeText(this, "Lỗi tải dữ liệu người dùng", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Không thể tải hồ sơ", Toast.LENGTH_SHORT).show()
         }
     }
 
